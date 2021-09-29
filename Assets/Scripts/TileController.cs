@@ -9,7 +9,7 @@ public class TileController : MonoBehaviour
     private BoardManager board;
     private SpriteRenderer render;
 
-    // Selecting tile
+    // Swap - Selecting tile
     private static readonly Color selectedColor = new Color(0.5f, 0.5f, 0.5f);
     private static readonly Color normalColor = Color.white;
 
@@ -17,6 +17,12 @@ public class TileController : MonoBehaviour
 
     private bool isSelected = false;
 
+    // Swap - Moving tile
+    private static readonly float moveDuration = 0.5f;
+
+    // Swap - Getting to Know our neigbour
+    private static readonly Vector2[] adjacentDirection = new Vector2[] { Vector2.up, Vector2.down, Vector2.left, Vector2.right };
+    
     private void Awake()
     {
         board = BoardManager.Instance;
@@ -35,7 +41,8 @@ public class TileController : MonoBehaviour
     private void OnMouseDown()
     {
         // Non Selectable conditions
-        if (render.sprite == null)
+        // Swap - Getting to know our neigbour
+        if (render.sprite == null||board.IsAnimating)
         {
             return;
         }
@@ -55,8 +62,23 @@ public class TileController : MonoBehaviour
 
             else
             {
-                previousSelected.Deselect();
-                Select();
+                 // is this an adjacent tile?
+                if (GetAllAdjacentTiles().Contains(previousSelected))
+                {
+                    TileController otherTile = previousSelected;
+                    previousSelected.Deselect();
+
+                    // swap tile
+                    SwapTile(otherTile, () => {
+                            SwapTile(otherTile);
+                    });
+                }
+                // if not adjacent then change selected
+                else
+                {
+                    previousSelected.Deselect();
+                    Select();
+                }
             }
         }
     }
@@ -75,6 +97,61 @@ public class TileController : MonoBehaviour
         isSelected = false;
         render.color = normalColor;
         previousSelected = null;
+    }
+
+    #endregion
+
+    // Swap - Moving tile
+    public IEnumerator MoveTilePosition(Vector2 targetPosition, System.Action onCompleted)
+    {
+        Vector2 startPosition = transform.position;
+        float time = 0.0f;
+
+        // run animation on next frame for safety reason
+        yield return new WaitForEndOfFrame();
+
+        while (time < moveDuration)
+        {
+            transform.position = Vector2.Lerp(startPosition, targetPosition, time / moveDuration);
+            time += Time.deltaTime;
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        transform.position = targetPosition;
+
+        onCompleted?.Invoke();
+    }
+
+    public void SwapTile(TileController otherTile, System.Action onCompleted = null)
+    {
+        StartCoroutine(board.SwapTilePosition(this, otherTile, onCompleted));
+    }
+
+    // Swap - Getting to know our Neighbour
+    #region Adjacent
+    private TileController GetAdjacent(Vector2 castDir)
+    {
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, castDir, render.size.x);
+
+        if (hit)
+        {
+            return hit.collider.GetComponent<TileController>();
+        }
+
+        return null;
+    }
+
+    public List<TileController> GetAllAdjacentTiles()
+    {
+        List<TileController> adjacentTiles = new List<TileController>();
+
+        for (int i = 0; i < adjacentDirection.Length; i++)
+        {
+            adjacentTiles.Add(GetAdjacent(adjacentDirection[i]));
+        }
+
+        return adjacentTiles;
     }
 
     #endregion

@@ -241,9 +241,9 @@ MonoBehaviour:
   offsetTile: {x: 0.1, y: 0.1}
   offsetBoard: {x: 0, y: -0.25}
   tileTypes:
-  - {fileID: 21300000, guid: 12a74fd87e62a10678cc8e37062ade76, type: 3}
+  - {fileID: 21300000, guid: ec9f6e94b03ca78f7b2a5cdcdc7e137c, type: 3}
   - {fileID: 21300000, guid: 0d57a68b88c3c51bdaea59888c2dea96, type: 3}
-  - {fileID: 21300000, guid: c6e5769b0d0bb2798986b177936ec5f3, type: 3}
+  - {fileID: 21300000, guid: fa958a44d03e64c64acaf96e0f05052e, type: 3}
   - {fileID: 21300000, guid: 08b4b4cb9e1cc267c983fdad0506a620, type: 3}
   - {fileID: 21300000, guid: 6dc3b94e52a88a4f4b35497d631cda68, type: 3}
   - {fileID: 21300000, guid: 9b02debb34c64ab00b19ede7c2b42969, type: 3}
