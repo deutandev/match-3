@@ -253,13 +253,15 @@ public class BoardManager : MonoBehaviour
         return true;
     }
 
-    
+
     // create drop process
     #region Drop
 
     private void ProcessDrop()
     {
         Dictionary<TileController, int> droppingTiles = GetAllDrop();
+        // Creating Destroy And Fill Process
+        StartCoroutine(DropTiles(droppingTiles, ProcessDestroyAndFill));
     }
 
     private Dictionary<TileController, int> GetAllDrop()
@@ -312,6 +314,105 @@ public class BoardManager : MonoBehaviour
         }
 
         yield return null;
+
+        onCompleted?.Invoke();
+    }
+
+    #endregion
+
+    
+    // Creating Destroy And Fill Process
+    #region Destroy & Fill
+
+    private void ProcessDestroyAndFill()
+    {
+        List<TileController> destroyedTiles = GetAllDestroyed();
+        // Creating Reposition Process
+        StartCoroutine(DestroyAndFillTiles(destroyedTiles, ProcessReposition));
+    }
+
+    private List<TileController> GetAllDestroyed()
+    {
+        List<TileController> destroyedTiles = new List<TileController>();
+
+        for (int x = 0; x < size.x; x++)
+        {
+            for (int y = 0; y < size.y; y++)
+            {
+                if (tiles[x, y].IsDestroyed)
+                {
+                    destroyedTiles.Add(tiles[x, y]);
+                }
+            }
+        }
+
+        return destroyedTiles;
+    }
+
+    private IEnumerator DestroyAndFillTiles(List<TileController> destroyedTiles, System.Action onCompleted)
+    {
+        List<int> highestIndex = new List<int>();
+
+        for (int i = 0; i < size.x; i++)
+        {
+            highestIndex.Add(size.y - 1);
+        }
+
+        float spawnHeight = endPosition.y + tilePrefab.GetComponent<SpriteRenderer>().size.y + offsetTile.y;
+
+        foreach (TileController tile in destroyedTiles)
+        {
+            Vector2Int tileIndex = GetTileIndex(tile);
+            Vector2Int targetIndex = new Vector2Int(tileIndex.x, highestIndex[tileIndex.x]);
+            highestIndex[tileIndex.x]--;
+
+            tile.transform.position = new Vector2(tile.transform.position.x, spawnHeight);
+            tile.GenerateRandomTile(targetIndex.x, targetIndex.y);
+        }
+
+        yield return null;
+
+        onCompleted?.Invoke();
+    }
+
+    #endregion
+
+
+    // Creating Reposition Process
+    #region Reposition
+
+    private void ProcessReposition()
+    {
+        StartCoroutine(RepositionTiles(ProcessMatches));
+    }
+
+    private IEnumerator RepositionTiles(System.Action onCompleted)
+    {
+        List<bool> isCompleted = new List<bool>();
+
+        int i = 0;
+        for (int x = 0; x < size.x; x++)
+        {
+            for (int y = 0; y < size.y; y++)
+            {
+                Vector2 targetPosition = GetIndexPosition(new Vector2Int(x, y));
+
+                // skip if already on position
+                if ((Vector2)tiles[x, y].transform.position == targetPosition)
+                {
+                    continue;
+                }
+
+                isCompleted.Add(false);
+
+                int index = i;
+                StartCoroutine(tiles[x, y].MoveTilePosition(targetPosition, () => { isCompleted[index] = true; }));
+
+                i++;
+            }
+        }
+
+        yield return new WaitUntil(() => { return IsAllTrue(isCompleted); });
 
         onCompleted?.Invoke();
     }

@@ -299,4 +299,13 @@ public class TileController : MonoBehaviour
 
         onCompleted?.Invoke();
     }
+
+    // Creating Destroy And Fill Process
+    public void GenerateRandomTile(int x, int y)
+    {
+        transform.localScale = sizeNormal;
+        IsDestroyed = false;
+
+        ChangeId(Random.Range(0, board.tileTypes.Count), x, y);
+    }
 }
