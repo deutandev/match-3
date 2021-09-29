@@ -123,6 +123,7 @@ GameObject:
   - component: {fileID: 165458996}
   - component: {fileID: 165458998}
   - component: {fileID: 165458997}
+  - component: {fileID: 165458999}
   m_Layer: 5
   m_Name: TimePanel
   m_TagString: Untagged
@@ -185,6 +186,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 165458995}
   m_CullTransparentMesh: 0
+--- !u!114 &165458999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 165458995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59795041e87edfbcaaf5cf6217aa7f1c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  time: {fileID: 2132664124}
 --- !u!1 &165586494
 GameObject:
   m_ObjectHideFlags: 0
@@ -483,6 +497,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e8234e740da51616b8ba2adb9800a5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GameOverUI: {fileID: 823850915}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -667,13 +682,14 @@ GameObject:
   - component: {fileID: 823850912}
   - component: {fileID: 823850914}
   - component: {fileID: 823850913}
+  - component: {fileID: 823850915}
   m_Layer: 5
   m_Name: GameOverPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &823850912
 RectTransform:
   m_ObjectHideFlags: 0
@@ -730,6 +746,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 823850911}
   m_CullTransparentMesh: 0
+--- !u!114 &823850915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 823850911}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f881df5e7e14f89b1b28c4fe4cb1a96c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &922293584
 GameObject:
   m_ObjectHideFlags: 0
@@ -1093,7 +1121,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b07046f8186baba47aadd37529c5b52e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 20
+  duration: 60
 --- !u!1 &2065675439
 GameObject:
   m_ObjectHideFlags: 0
