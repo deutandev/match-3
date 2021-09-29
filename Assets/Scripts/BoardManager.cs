@@ -44,6 +44,9 @@ public class BoardManager : MonoBehaviour
 
     private TileController[,] tiles;
 
+    // Score manager
+    private int combo;
+
     private void Start()
     {
         Vector2 tileSize = tilePrefab.GetComponent<SpriteRenderer>().size;
@@ -201,6 +204,9 @@ public class BoardManager : MonoBehaviour
     public void Process()
     {
         IsProcessing = true;
+        // Score Manager
+        combo = 0;
+
         ProcessMatches();
     }
 
@@ -219,6 +225,10 @@ public class BoardManager : MonoBehaviour
 
         // Creating drop process
         StartCoroutine(ClearMatches(matchingTiles, ProcessDrop));
+        
+        // Score manager
+        combo++;
+        ScoreManager.Instance.IncrementCurrentScore(matchingTiles.Count, combo);
     }
 
     private IEnumerator ClearMatches(List<TileController> matchingTiles, System.Action onCompleted)
