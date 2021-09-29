@@ -69,6 +69,9 @@ public class TileController : MonoBehaviour
             return;
         }
 
+        // Add sfx
+        SoundManager.Instance.PlayTap();
+
         // Already selected this tile?
         if (isSelected)
         {
