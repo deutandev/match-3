@@ -26,10 +26,24 @@ public class TileController : MonoBehaviour
     // Swap - Check match
     public bool IsDestroyed { get; private set; }
 
+    // Creating Match Process
+    private static readonly float destroyBigDuration = 0.1f;
+    private static readonly float destroySmallDuration = 0.4f;
+
+    private static readonly Vector2 sizeBig = Vector2.one * 1.2f;
+    private static readonly Vector2 sizeSmall = Vector2.zero;
+    private static readonly Vector2 sizeNormal = Vector2.one;
+
     private void Awake()
     {
         board = BoardManager.Instance;
         render = GetComponent<SpriteRenderer>();
+    }
+
+    // Creating match process
+    private void Start()
+    { 
+        IsDestroyed = false;
     }
 
     public void ChangeId(int id, int x, int y)
@@ -77,6 +91,7 @@ public class TileController : MonoBehaviour
                         if (board.GetAllMatches().Count > 0)
                         {
                             Debug.Log("MATCH FOUND");
+                            board.Process();
                         }
                         else
                         {
@@ -245,4 +260,43 @@ public class TileController : MonoBehaviour
     }
 
     #endregion
+
+
+    // Creating Match Process
+    public IEnumerator SetDestroyed(System.Action onCompleted)
+    {
+        IsDestroyed = true;
+        id = -1;
+        name = "TILE_NULL";
+
+        Vector2 startSize = transform.localScale;
+        float time = 0.0f;
+
+        while (time < destroyBigDuration)
+        {
+            transform.localScale = Vector2.Lerp(startSize, sizeBig, time / destroyBigDuration);
+            time += Time.deltaTime;
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        transform.localScale = sizeBig;
+
+        startSize = transform.localScale;
+        time = 0.0f;
+
+        while (time < destroySmallDuration)
+        {
+            transform.localScale = Vector2.Lerp(startSize, sizeSmall, time / destroySmallDuration);
+            time += Time.deltaTime;
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        transform.localScale = sizeSmall;
+
+        render.sprite = null;
+
+        onCompleted?.Invoke();
+    }
 }
