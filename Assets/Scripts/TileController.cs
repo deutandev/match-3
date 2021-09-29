@@ -34,10 +34,15 @@ public class TileController : MonoBehaviour
     private static readonly Vector2 sizeSmall = Vector2.zero;
     private static readonly Vector2 sizeNormal = Vector2.one;
 
+    // game flow manager
+    private GameFlowManager game;
+
     private void Awake()
     {
         board = BoardManager.Instance;
         render = GetComponent<SpriteRenderer>();
+        // Game flow manager
+        game = GameFlowManager.Instance;
     }
 
     // Creating match process
@@ -59,7 +64,7 @@ public class TileController : MonoBehaviour
     {
         // Non Selectable conditions
         // Swap - Getting to know our neigbour
-        if (render.sprite == null||board.IsAnimating)
+        if (render.sprite == null || board.IsAnimating || game.IsGameOver)
         {
             return;
         }
@@ -90,7 +95,7 @@ public class TileController : MonoBehaviour
                         // Swap - Check Match
                         if (board.GetAllMatches().Count > 0)
                         {
-                            Debug.Log("MATCH FOUND");
+                            // Debug.Log("MATCH FOUND");
                             board.Process();
                         }
                         else
